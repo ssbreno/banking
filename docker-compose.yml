@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  nodejs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /app
+    volumes:
+      - ./:/app
+    command: sh -c "npm run start:dev"
+    ports:
+      - 3000:3000
+      - 9229:9229
+    depends_on:
+      - database-banking
+    networks:
+      - banking-network
+
+  database-banking:
+    image: 'bitnami/postgresql'
+    container_name: database-banking
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRESQL_USERNAME=docker
+      - POSTGRESQL_PASSWORD=docker
+      - POSTGRESQL_DATABASE=banking
+    volumes:
+      - 'postgresql_data:/bitnami/postgresql'
+    networks:
+      - banking-network
+
+volumes:
+  postgresql_data:
+    driver: local
+
+networks:
+  banking-network:

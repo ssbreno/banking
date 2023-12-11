@@ -19,9 +19,9 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@/*": ["/*"],
-      "@business/*": ["./src/application/business/*"],
-      "@controllers/*": ["./src/application/controllers/*"],
-      "@modules/*": ["./src/application/modules/*"],
+      "@business/*": ["src/app/business/*"],
+      "@controllers/*": ["src/app/controllers/*"],
+      "@modules/*": ["src/app/modules/*"],
       "@entities/*": ["./src/domain/entities/*"],
       "@interfaces/*": ["./src/domain/interfaces/*"],
       "@dtos/*": ["./src/domain/dtos/*"],

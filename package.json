@@ -21,7 +21,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prepare": "husky install",
     "typeorm": "ts-node ./node_modules/typeorm/cli",
-    "migrate:generate": "npm run typeorm -- -d ./ormconfig.ts migration:generate ./src/infrastructure/database/migrations/$npm_config_name",
+    "migrate:generate": "npm run typeorm -- -d ./ormconfig.ts migration:generate ./src/database/migrations/$npm_config_name",
     "migrate:run": "npm run typeorm migration:run -- -d ormconfig.ts",
     "migrate:revert": "npm run typeorm migration:revert -- -d ormconfig.ts"
   },
@@ -34,6 +34,7 @@
     "@nestjs/platform-fastify": "^9.4.3",
     "@nestjs/swagger": "^7.1.16",
     "@nestjs/typeorm": "^10.0.1",
+    "bcryptjs": "^2.4.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "pg": "^8.11.0",

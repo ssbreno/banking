@@ -7,8 +7,8 @@ dotenv.config();
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
   url: process.env.DATABASE_URL,
-  entities: [__dirname + '/../../domain/entities/**/*-entity.{js,ts}'],
-  migrations: ['src/infrastructure/database/migrations/*.{js,ts}'],
+  entities: [__dirname + '/../../**/*-entity.{js,ts}'],
+  migrations: ['src/database/migrations/*.{js,ts}'],
   migrationsTableName: 'migrations',
   synchronize: false,
   logging: false,

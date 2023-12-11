@@ -2,7 +2,11 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-import { HealthcheckModule } from './application/modules/healthcheck/healthcheck.module';
+import { HealthcheckModule } from './healthcheck/healthcheck.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ErrorsInterceptor } from '../../core/interceptors/errors.interceptor';
+import { UsersModule } from './user/user.module';
+import { BankAccountModule } from './bank-account/bank-account.module';
 
 @Module({
   imports: [
@@ -17,8 +21,15 @@ import { HealthcheckModule } from './application/modules/healthcheck/healthcheck
       namingStrategy: new SnakeNamingStrategy(),
     }),
     HealthcheckModule,
+    UsersModule,
+    BankAccountModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ErrorsInterceptor,
+    },
+  ],
 })
 export class AppModule {}

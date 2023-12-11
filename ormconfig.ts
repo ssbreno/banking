@@ -8,8 +8,8 @@ dotenv.config();
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
   url: process.env.DATABASE_URL,
-  entities: ['src/domain/entities/**/*.entity{.ts,.js}'],
-  migrations: ['src/infrastructure/database/migrations/*.{js,ts}'],
+  entities: ['src/**/*.entity{.ts,.js}'],
+  migrations: ['src/database/migrations/*.{js,ts}'],
   migrationsTableName: 'migrations',
   namingStrategy: new SnakeNamingStrategy(),
 };

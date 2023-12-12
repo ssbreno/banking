@@ -25,7 +25,7 @@ async function bootstrap() {
     .setTitle('Banking - Swagger')
     .setDescription('The Banking API where all CRUD operations are performed')
     .setVersion(process.env.VERSION)
-    .addTag('Zeus')
+    .addTag('Banking')
     .addBearerAuth(
       {
         description: `Please enter token in following format: 'jwt-token'`,

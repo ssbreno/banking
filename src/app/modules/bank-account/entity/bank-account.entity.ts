@@ -30,6 +30,9 @@ export class BankAccount {
   })
   type?: BankAccountType;
 
+  @Column('boolean', { default: true })
+  isActive?: boolean;
+
   @ManyToOne(() => User, (user) => user.bankAccounts)
   user?: User;
 

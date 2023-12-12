@@ -26,11 +26,11 @@ export class CreateBankAccountsService {
         HttpStatus.BAD_REQUEST,
       );
 
-    const createdUser = this.bankAccountRepository.create(
+    const createdBankAccount = this.bankAccountRepository.create(
       await this.parserToDTO(dto),
     );
-    await this.bankAccountRepository.save(createdUser);
-    return createdUser;
+    await this.bankAccountRepository.save(createdBankAccount);
+    return createdBankAccount;
   }
 
   private async parserToDTO(dto: CreateBankAccountDTO): Promise<BankAccount> {

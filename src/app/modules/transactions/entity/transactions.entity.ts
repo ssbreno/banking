@@ -8,25 +8,28 @@ export class Transactions {
   id?: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  amount: number;
+  amount?: number;
 
   @Column({
     type: 'enum',
     enum: TransactionsType,
     nullable: true,
   })
-  type: TransactionsType;
+  type?: TransactionsType;
+
+  @Column('varchar')
+  description?: string;
 
   @ManyToOne(() => BankAccount, (bankAccount) => bankAccount.transactions)
-  bankAccount: BankAccount;
+  bankAccount?: BankAccount;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date;
+  createdAt?: Date;
 
   @Column({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
     onUpdate: 'CURRENT_TIMESTAMP',
   })
-  updatedAt: Date;
+  updatedAt?: Date;
 }

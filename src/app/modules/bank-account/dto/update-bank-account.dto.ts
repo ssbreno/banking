@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsOptional } from 'class-validator';
+import { IsOptional, IsNumber } from 'class-validator';
 
 export class UpdateBankAccountDTO {
-  @IsString()
+  @IsNumber()
   @IsOptional()
   @ApiProperty({ description: 'Saldo', nullable: true })
   balance?: number;

@@ -17,7 +17,7 @@ lerna-debug.log*
 # Tests
 /coverage
 /.nyc_output
-
+.cache/
 # IDEs and editors
 /.idea
 .project
@@ -26,10 +26,27 @@ lerna-debug.log*
 *.launch
 .settings/
 *.sublime-workspace
-
+.cache
 # IDE - VSCode
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# Terraform
+.terraform*
+terraform.plan
+terraform.tfvars
+tfplan
+*.tfstate
+*.tfstate.backup
+./infra/localstack*
+
+# .ENV
+.env
+package-lock.json
+
+*.csv
+
+.zip

@@ -9,6 +9,7 @@ import { DeleteTransactionsService } from './services/delete-transactions.servic
 import { FindAllTransactionsService } from './services/find-all-transactions.service';
 import { FindTransactionsService } from './services/find-transactions.service';
 import { UpdateTransactionsService } from './services/update-transactions.service';
+import { TransactionsUtils } from '../../../shared/utils/transactions.utils';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UpdateTransactionsService } from './services/update-transactions.servic
     FindAllTransactionsService,
     FindTransactionsService,
     UpdateTransactionsService,
+    TransactionsUtils,
   ],
   exports: [
     CreateTransactionsService,

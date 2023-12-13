@@ -22,7 +22,7 @@ export class CreateBankAccountsService {
       await this.findBankAccountService.findBankAccountByAccount(account);
     if (bankAccount)
       throw new HttpException(
-        `Cliente ja possui uma conta no banco com o numero ${account.accountNumber}`,
+        `Cliente ja possui uma conta no banco com o numero ${account?.accountNumber}`,
         HttpStatus.BAD_REQUEST,
       );
 

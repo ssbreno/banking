@@ -2,6 +2,10 @@
 
 ![Code Coverage](https://img.shields.io/badge/Code%20Coverage-36%25-critical?style=flat)
 
+# Explanation
+
+A simulation of a simple bank account was created, with three entities: User, representing the account owner, BankAccount, and the Transactions entity to control the account's transaction flow as well as its balance. Logic was implemented to update the balance in real-time when manipulating any transaction in the system.
+
 # Technologys
 
 - Docker

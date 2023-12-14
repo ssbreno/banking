@@ -18,18 +18,23 @@
 - Docker
 - OS Preference Linux or Windows WSL Mode
 
+# Docs
+- http://localhost:3001/api
+
 # Run Project
 
 - Create .env from .env-local
-- Run yarn
+- Run - yarn
 - docker-compose build
 - docker-compose up -d
-- Run npm run migrate:run \*to create migrations
+- Run yarn run migrate:run - to create migrations
 - Run yarn run start:dev
+
+Import all endpoints from folder /docs to use in insomnia.
 
 # Testing
 
-- Only run npm run test
+- Only run : yarn test
 
 # Finishing
 

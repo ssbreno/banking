@@ -24,7 +24,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Banking - Swagger')
     .setDescription('The Banking API where all CRUD operations are performed')
-    .setVersion(process.env.VERSION)
+    .setVersion('1.0')
     .addTag('Banking')
     .addBearerAuth(
       {

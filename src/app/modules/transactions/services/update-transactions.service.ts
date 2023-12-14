@@ -62,7 +62,7 @@ export class UpdateTransactionsService {
       };
       await Promise.all([
         await this.transactionsRepository.save(transactionsUpdated),
-        this.validateAndUpdateBankAccount(dto, bankAccount),
+        await this.validateAndUpdateBankAccount(dto, bankAccount),
       ]);
       await queryRunner.commitTransaction();
     } catch (error) {
@@ -77,17 +77,20 @@ export class UpdateTransactionsService {
     dto: UpdateTransactionsDTO,
     bankAccount: BankAccount,
   ) {
-    const type: TransactionsType =
-      dto.amount > 0 ? TransactionsType.CREDIT : TransactionsType.DEBIT;
-    const valueAmount = Number(dto.amount) + Number(bankAccount.balance);
-    const amountChange = this.transactionsUtils.calculateTransactionAmount(
-      type,
-      valueAmount,
-    );
+    const transactions = await this.transactionsRepository.find({
+      where: {
+        bankAccount: {
+          id: dto.bankAccountId,
+        },
+      },
+    });
+    const totalAmount = transactions.reduce((accumulator, transaction) => {
+      return accumulator + Number(transaction.amount);
+    }, 0);
 
     const updatedBankAccount: Partial<BankAccount> = {
       ...bankAccount,
-      balance: Number(bankAccount.balance) + Number(amountChange),
+      balance: Number(totalAmount),
     };
 
     await this.bankAccountRepository.save(updatedBankAccount);

@@ -13,7 +13,6 @@ import { CreateBankAccountDTO } from '../dto/create-bank-account.dto';
 import { CreateBankAccountsService } from '../services/create-bank-account.service';
 import { FindBankAccountService } from '../services/find-bank-account.service';
 import { DeleteBankAccountService } from '../services/delete-bank-account.service';
-import { DeleteBankAccountDTO } from '../dto/delete-bank-account.dto';
 import { UpdateBankAccountDTO } from '../dto/update-bank-account.dto';
 import { UpdateBankAccountsService } from '../services/update-bank-account.service';
 import { FindAllBankAccountDTO } from '../dto/find-all-bank-account.dto';
@@ -62,7 +61,7 @@ export class BankAccountController {
     status: 404,
     description: 'Bank Account not found',
   })
-  async getBankAccount(@Param() id: string) {
+  async getBankAccount(@Param('id') id: string) {
     return await this.findBankAccountService.execute(id);
   }
 
@@ -77,13 +76,11 @@ export class BankAccountController {
   }
 
   @Delete(':id')
-  @ApiBody({ type: DeleteBankAccountDTO })
   @ApiResponse({
     status: 201,
     description: 'Bank Account deleted',
-    type: DeleteBankAccountDTO,
   })
-  async deleteOne(@Param() dto: DeleteBankAccountDTO) {
-    return await this.deleteBankAccountService.execute(dto);
+  async deleteOne(@Param('id') id: string) {
+    return await this.deleteBankAccountService.execute(id);
   }
 }

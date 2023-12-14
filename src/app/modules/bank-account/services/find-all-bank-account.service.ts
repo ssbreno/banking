@@ -31,8 +31,9 @@ export class FindAllBankAccountsService {
   }
 
   private async mountWhere(dto: FindAllBankAccountDTO) {
-    const queryBuilder =
-      this.bankAccountRepository.createQueryBuilder('bankAccount');
+    const queryBuilder = this.bankAccountRepository
+      .createQueryBuilder('bankAccount')
+      .leftJoinAndSelect('bankAccount.user', 'user');
     const filters: { filter: string; value?: any }[] = [];
 
     if (dto.type) {

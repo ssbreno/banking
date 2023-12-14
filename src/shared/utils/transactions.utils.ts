@@ -18,11 +18,26 @@ export class TransactionsUtils {
         id: dto.bankAccountId,
       },
     });
-    const checkBalance =
-      bankAccountRepository.balance < dto.amount &&
-      dto.type === TransactionsType.DEBIT;
-    if (checkBalance) {
+
+    if (!bankAccountRepository) {
+      throw new HttpException(`Conta não encontrada`, HttpStatus.NOT_FOUND);
+    }
+
+    const balance = Number(bankAccountRepository.balance);
+
+    if (balance === 0 && dto.amount < 0) {
       throw new HttpException(`Saldo insuficiente`, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  public calculateTransactionAmount(
+    type: TransactionsType,
+    amount: number,
+  ): number {
+    if (type === TransactionsType.CREDIT) {
+      return Number(amount);
+    } else if (type === TransactionsType.DEBIT) {
+      return -Math.abs(Number(amount));
     }
   }
 }

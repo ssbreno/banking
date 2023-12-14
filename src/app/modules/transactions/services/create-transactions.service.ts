@@ -1,9 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource } from 'typeorm';
+import { Repository } from 'typeorm';
 import { TransactionsUtils } from '../../../../shared/utils/transactions.utils';
 import { BankAccount } from '../../bank-account/entity/bank-account.entity';
-import { FindBankAccountService } from '../../bank-account/services/find-bank-account.service';
 import { CreateTransactionsDTO } from '../dto/create-transactions.dto';
 import { Transactions } from '../entity/transactions.entity';
 import { TransactionsType } from '../enum/transactions-type.enum';
@@ -13,19 +12,18 @@ export class CreateTransactionsService {
   constructor(
     @InjectRepository(Transactions)
     private readonly transactionsRepository: Repository<Transactions>,
-    private readonly findBankAccountService: FindBankAccountService,
     @InjectRepository(BankAccount)
     private readonly bankAccountRepository: Repository<BankAccount>,
-    private dataSource: DataSource,
     private readonly transactionsUtils: TransactionsUtils,
   ) {}
 
   async execute(dto: CreateTransactionsDTO) {
-    return this.SaveWithTransaction(dto);
+    return await this.SaveWithTransaction(dto);
   }
 
   private async SaveWithTransaction(dto: CreateTransactionsDTO) {
-    const queryRunner = this.dataSource.createQueryRunner();
+    const queryRunner =
+      this.transactionsRepository.manager.connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
@@ -37,18 +35,26 @@ export class CreateTransactionsService {
       });
 
       await this.transactionsUtils.checkBankAccountBalance(dto);
-      const sumTransactions =
-        dto.type === TransactionsType.CREDIT ? dto.amount : -dto.amount;
+      if (!bankAccount.isActive) {
+        throw new HttpException(`Conta inativa`, HttpStatus.BAD_REQUEST);
+      }
+      const type: TransactionsType =
+        dto.amount > 0 ? TransactionsType.CREDIT : TransactionsType.DEBIT;
+
+      const sumTransactions = this.transactionsUtils.calculateTransactionAmount(
+        type,
+        dto.amount,
+      );
       const updatedBankAccount: Partial<BankAccount> = {
-        balance: bankAccount.balance + sumTransactions,
+        ...bankAccount,
+        balance: Number(bankAccount.balance) + Number(sumTransactions),
       };
       const transactionsDTO = await this.parserToDTO(dto);
-
       await Promise.all([
         this.transactionsRepository.save(transactionsDTO),
-        this.bankAccountRepository.update(bankAccount.id, updatedBankAccount),
-        queryRunner.commitTransaction(),
+        this.bankAccountRepository.save(updatedBankAccount),
       ]);
+      await queryRunner.commitTransaction();
     } catch (err) {
       await queryRunner.rollbackTransaction();
       throw err;
@@ -60,9 +66,11 @@ export class CreateTransactionsService {
   private async parserToDTO(dto: CreateTransactionsDTO): Promise<Transactions> {
     const type: TransactionsType =
       dto.amount > 0 ? TransactionsType.CREDIT : TransactionsType.DEBIT;
-    const bankAccount = await this.findBankAccountService.execute(
-      dto.bankAccountId,
-    );
+    const bankAccount = await this.bankAccountRepository.findOne({
+      where: {
+        id: dto.bankAccountId,
+      },
+    });
 
     return {
       amount: dto.amount,

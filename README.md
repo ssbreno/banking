@@ -1,6 +1,7 @@
 ## Banking Setup
 
 ![Code Coverage](https://img.shields.io/badge/Code%20Coverage-36%25-critical?style=flat)
+
 # Technologys
 
 - Docker
@@ -23,7 +24,7 @@
 - Run yarn
 - docker-compose build
 - docker-compose up -d
-- Run npm run migrate:run *to create migrations
+- Run npm run migrate:run \*to create migrations
 - Run yarn run start:dev
 
 # Testing

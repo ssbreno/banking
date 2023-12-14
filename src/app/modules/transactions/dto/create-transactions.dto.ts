@@ -5,6 +5,7 @@ import {
   IsEnum,
   IsOptional,
   IsNumber,
+  IsUUID,
 } from 'class-validator';
 import { TransactionsType } from '../enum/transactions-type.enum';
 
@@ -30,7 +31,7 @@ export class CreateTransactionsDTO {
   })
   type?: TransactionsType;
 
-  @IsString()
+  @IsUUID()
   @IsNotEmpty()
   @ApiProperty({ description: 'Id da conta bancaria', nullable: true })
   bankAccountId?: string;

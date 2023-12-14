@@ -61,7 +61,7 @@ export class TransactionsController {
     status: 404,
     description: 'Transaction not found',
   })
-  async getBankAccount(@Param() id: string) {
+  async getBankAccount(@Param('id') id: string) {
     return await this.findTransactionsService.execute(id);
   }
 
@@ -80,7 +80,7 @@ export class TransactionsController {
     status: 201,
     description: 'Transaction deleted',
   })
-  async deleteOne(@Param() id: string) {
+  async deleteOne(@Param('id') id: string) {
     return await this.deleteTransactionsService.execute(id);
   }
 }

@@ -6,6 +6,7 @@ import { Transactions } from '../entity/transactions.entity';
 import { FindTransactionsService } from './find-transactions.service';
 import { TransactionsType } from '../enum/transactions-type.enum';
 import { BankAccount } from '../../bank-account/entity/bank-account.entity';
+import { TransactionsUtils } from '../../../../shared/utils/transactions.utils';
 
 @Injectable()
 export class UpdateTransactionsService {
@@ -15,6 +16,7 @@ export class UpdateTransactionsService {
     @InjectRepository(BankAccount)
     private readonly bankAccountRepository: Repository<BankAccount>,
     private readonly findTransactionsService: FindTransactionsService,
+    private readonly transactionsUtils: TransactionsUtils,
   ) {}
 
   async execute(id: string, dto: UpdateTransactionsDTO) {
@@ -25,9 +27,7 @@ export class UpdateTransactionsService {
         HttpStatus.BAD_REQUEST,
       );
     }
-
-    const updatedTransaction = this.parserToDTO(dto, transactions);
-    await this.saveTransactionWithBankAccount(dto, updatedTransaction);
+    await this.saveTransactionWithBankAccount(dto, transactions);
     return true;
   }
 
@@ -52,9 +52,18 @@ export class UpdateTransactionsService {
           HttpStatus.BAD_REQUEST,
         );
       }
-
-      await this.validateAndUpdateBankAccount(dto, bankAccount);
-      await this.transactionsRepository.save(updatedTransaction);
+      if (!bankAccount.isActive) {
+        throw new HttpException(`Conta inativa`, HttpStatus.BAD_REQUEST);
+      }
+      await this.transactionsUtils.checkBankAccountBalance(dto);
+      const transactionsUpdated = {
+        ...updatedTransaction,
+        ...this.parserToDTO(dto, updatedTransaction),
+      };
+      await Promise.all([
+        await this.transactionsRepository.save(transactionsUpdated),
+        this.validateAndUpdateBankAccount(dto, bankAccount),
+      ]);
       await queryRunner.commitTransaction();
     } catch (error) {
       await queryRunner.rollbackTransaction();
@@ -68,10 +77,20 @@ export class UpdateTransactionsService {
     dto: UpdateTransactionsDTO,
     bankAccount: BankAccount,
   ) {
-    const sumTransactions =
-      dto.type === TransactionsType.CREDIT ? dto.amount : -dto.amount;
-    bankAccount.balance += sumTransactions;
-    await this.bankAccountRepository.save(bankAccount);
+    const type: TransactionsType =
+      dto.amount > 0 ? TransactionsType.CREDIT : TransactionsType.DEBIT;
+    const valueAmount = Number(dto.amount) + Number(bankAccount.balance);
+    const amountChange = this.transactionsUtils.calculateTransactionAmount(
+      type,
+      valueAmount,
+    );
+
+    const updatedBankAccount: Partial<BankAccount> = {
+      ...bankAccount,
+      balance: Number(bankAccount.balance) + Number(amountChange),
+    };
+
+    await this.bankAccountRepository.save(updatedBankAccount);
   }
 
   private parserToDTO(

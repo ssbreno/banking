@@ -1,14 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsEnum, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsEnum, IsOptional, IsUUID } from 'class-validator';
 import { BankAccountType } from '../enum/bank-account-type.enum';
 
 export class CreateBankAccountDTO {
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty({ description: 'Numero da conta', nullable: true })
-  accountNumber?: string;
-
-  @IsString()
+  @IsUUID()
   @IsNotEmpty()
   @ApiProperty({ description: 'Id do usuario', nullable: true })
   userId?: string;

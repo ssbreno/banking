@@ -20,8 +20,8 @@ export class CreateUserService {
     if (user)
       throw new HttpException('Usuário já existe', HttpStatus.BAD_REQUEST);
 
-    const createdUser = this.userRepository.create(await this.parserToDTO(dto));
-    await this.userRepository.save(createdUser);
+    const userToRepository = await this.parserToDTO(dto);
+    const createdUser = await this.userRepository.save(userToRepository);
     return createdUser;
   }
 

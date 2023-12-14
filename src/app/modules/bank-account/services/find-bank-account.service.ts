@@ -2,7 +2,7 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BankAccount } from '../entity/bank-account.entity';
-import { CreateBankAccountDTO } from '../dto/create-bank-account.dto';
+import { formatBalanceInBRL } from '../../../../shared/utils/format-currency';
 
 @Injectable()
 export class FindBankAccountService {
@@ -11,7 +11,7 @@ export class FindBankAccountService {
     private readonly bankAccountRepository: Repository<BankAccount>,
   ) {}
 
-  async execute(id: string) {
+  async execute(id: string): Promise<any> {
     const bankAccount = await this.bankAccountRepository.findOne({
       where: {
         id,
@@ -22,15 +22,18 @@ export class FindBankAccountService {
       throw new HttpException('Conta não encontrada', HttpStatus.NOT_FOUND);
     }
 
-    return bankAccount;
+    const transformBankAccount = {
+      ...bankAccount,
+      balance: formatBalanceInBRL(bankAccount.balance).toString(),
+    };
+
+    return transformBankAccount;
   }
 
-  async findBankAccountByAccount(
-    dto: Pick<CreateBankAccountDTO, 'accountNumber'>,
-  ) {
+  async findBankAccountByAccount(accountNumber: string) {
     const bankAccount = await this.bankAccountRepository.findOne({
       where: {
-        accountNumber: dto.accountNumber,
+        accountNumber,
       },
     });
 

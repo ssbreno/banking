@@ -31,8 +31,9 @@ export class FindAllTransactionsService {
   }
 
   private async mountWhere(dto: FindAllTransactionsDTO) {
-    const queryBuilder =
-      this.transactionsRepository.createQueryBuilder('transactions');
+    const queryBuilder = this.transactionsRepository
+      .createQueryBuilder('transactions')
+      .leftJoinAndSelect('transactions.bankAccount', 'bankAccount');
     const filters: { filter: string; value?: any }[] = [];
 
     const order = dto.asc === 'ASC' ? 'ASC' : 'DESC';

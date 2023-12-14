@@ -15,10 +15,11 @@ export class FindTransactionsService {
       where: {
         id,
       },
+      relations: ['bankAccount'],
     });
 
     if (!transactions) {
-      throw new HttpException('Conta não encontrada', HttpStatus.NOT_FOUND);
+      throw new HttpException('Transacao não encontrada', HttpStatus.NOT_FOUND);
     }
 
     return transactions;

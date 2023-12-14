@@ -18,6 +18,9 @@ export class UpdateBankAccountsService {
     if (!bankAccount)
       throw new HttpException(`Cliente não encontrado`, HttpStatus.BAD_REQUEST);
 
+    if (!bankAccount.isActive) {
+      throw new HttpException(`Conta inativa`, HttpStatus.BAD_REQUEST);
+    }
     const bankAccountUpdated = {
       ...bankAccount,
       ...this.parserToDTO(dto, bankAccount),
@@ -30,8 +33,8 @@ export class UpdateBankAccountsService {
     dto: UpdateBankAccountDTO,
     data: BankAccount,
   ): Promise<BankAccount> {
-    const bankAccount: Pick<BankAccount, 'balance'> = {
-      balance: dto.balance ?? data.balance,
+    const bankAccount: Partial<BankAccount> = {
+      isActive: dto.isActive ?? data.isActive,
     };
 
     return bankAccount;

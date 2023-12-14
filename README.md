@@ -39,4 +39,4 @@ Import all endpoints from folder /docs to use in insomnia.
 
 # Finishing
 
-<img src="https://i.imgur.com/v23I1D3.png">
+<img width="957" alt="image" src="https://github.com/ssbreno/banking/assets/8092325/0a5290d0-e70c-464b-b63b-eda52f418d5c">
